@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topic 4</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; }
+    .quiz-container { width: 100%; max-width: 650px; background: #1e1e1e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .progress-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: bold; }
+    .badge { padding: 6px 12px; border-radius: 20px; font-size: 14px; }
+    .badge-correct { background-color: #2e7d32; color: white; }
+    .badge-wrong { background-color: #c62828; color: white; }
+    .question { font-size: 18px; margin-bottom: 20px; font-weight: 600; line-height: 1.4; }
+    .option { background: #2c2c2c; padding: 14px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; border: 1px solid #3d3d3d; }
+    .option:hover { background: #3a3a3a; }
+    .option.correct { background: #1b5e20 !important; border-color: #4caf50; color: white; }
+    .option.wrong { background: #b71c1c !important; border-color: #f44336; color: white; }
+    .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; }
+    button { background: #1a73e8; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    button:disabled { background: #424242; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h2><center>Topic 4</center></h2>
+  
+  <div class="progress-bar">
+    <span id="question-number">Question 1 / 50</span>
+    <div>
+      <span class="badge badge-correct" id="score-correct">Correct: 0</span>
+      <span class="badge badge-wrong" id="score-wrong">Wrong: 0</span>
+    </div>
+  </div>
+
+  <div class="question" id="question-text">Question text will appear here...</div>
+  <div id="options-container"></div>
+
+  <div class="nav-btns">
+    <button id="prev-btn" onclick="prevQuestion()" disabled>Previous</button>
+    <button id="next-btn" onclick="nextQuestion()">Next</button>
+  </div>
+</div>
+
+<script>
+const quizData = [
+  // Subtopic 4.1: Inheritance & Polymorphism
+  {
+    q: "Which keyword is used in Java to implement inheritance between classes?",
+    options: ["implements", "extends", "super", "inherits"],
+    answer: 1
+  },
+  {
+    q: "Which of the following is a primary benefit of applying the concept of Inheritance?",
+    options: ["Reduces code reusability", "Provides code reusability and avoids duplicate code", "Drastically increases source file size", "Prevents the use of methods"],
+    answer: 1
+  },
+  {
+    q: "Among the following types of inheritance, which one is NOT directly supported by classes in Java using the 'extends' keyword?",
+    options: ["Single Inheritance", "Multilevel Inheritance", "Multiple Inheritance", "Hierarchical Inheritance"],
+    answer: 2
+  },
+  {
+    q: "What is the primary purpose of the 'super' keyword in Java?",
+    options: ["To invoke variables or methods from the parent class", "To create a new object from the child class", "To mark a method as the primary core of the program", "To terminate the execution of a method"],
+    answer: 0
+  },
+  {
+    q: "How do you invoke a parent class constructor from a child class constructor?",
+    options: ["parent()", "super()", "this()", "extends()"],
+    answer: 1
+  },
+  {
+    q: "What is an important rule when using 'super()' inside a child class constructor?",
+    options: ["It must be placed on the last line", "It must be placed on the first line inside the constructor", "It can be placed anywhere", "It must be called inside the main() method"],
+    answer: 1
+  },
+  {
+    q: "What happens when a child class defines a method with the same name and parameters as an existing method in its parent class?",
+    options: ["Method Overloading", "Method Overriding", "Method Shadowing", "Method Hiding"],
+    answer: 1
+  },
+  {
+    q: "Which statement is TRUE regarding Method Overriding?",
+    options: ["It has the same method name but a different parameter list", "It occurs only within the same class", "It has the exact same method name and parameter list as the parent class", "It does not require inheritance"],
+    answer: 2
+  },
+  {
+    q: "Which keyword is used to declare an Abstract Class?",
+    options: ["interface", "abstract", "virtual", "implements"],
+    answer: 1
+  },
+  {
+    q: "Can we directly create objects (instantiate) from an Abstract Class using the 'new' keyword?",
+    options: ["Yes, without any conditions", "No, absolutely not", "Yes, if there are no variables", "Yes, if it contains only concrete methods"],
+    answer: 1
+  },
+  {
+    q: "What is an abstract method?",
+    options: ["A method that has a full body implementation", "A method declared without any method body (no implementation)", "A method that contains only static variables", "A method that cannot be inherited"],
+    answer: 1
+  },
+  {
+    q: "Which keyword does a class use to implement an Interface?",
+    options: ["extends", "implements", "uses", "abstract"],
+    answer: 1
+  },
+  {
+    q: "By default, all variables declared inside an Interface are:",
+    options: ["private and static", "protected and final", "public, static, and final", "private, static, and final"],
+    answer: 2
+  },
+  {
+    q: "What is the default access modifier for methods inside an Interface?",
+    options: ["private", "protected", "public abstract", "package-private"],
+    answer: 2
+  },
+  {
+    q: "Which keyword is used if an Interface wants to inherit another Interface?",
+    options: ["implements", "extends", "super", "inherits"],
+    answer: 1
+  },
+  {
+    q: "Why does Java allow Multiple Inheritance through the use of Interfaces?",
+    options: ["Because interfaces do not contain variables", "Because a class can implement more than one interface", "Because interfaces use the super keyword", "Because interfaces are processed separately"],
+    answer: 1
+  },
+  {
+    q: "What is required of a concrete class that implements an Interface?",
+    options: ["Rewrite all interface variables", "Provide implementation bodies for ALL abstract methods of that interface", "Change the interface name", "Create a new constructor for the interface"],
+    answer: 1
+  },
+  {
+    q: "What happens if a child class does not implement all abstract methods from its abstract parent class?",
+    options: ["Compilation Error, unless the child class is also declared abstract", "The program runs without any errors", "Remaining methods are automatically deleted", "A runtime error occurs during execution"],
+    answer: 0
+  },
+  {
+    q: "In inheritance, the class being inherited from is known as...",
+    options: ["Child class / Subclass", "Parent class / Superclass", "Interface class", "Derived class"],
+    answer: 1
+  },
+  {
+    q: "In inheritance, the class that inherits properties from a parent class is known as...",
+    options: ["Superclass", "Base class", "Subclass / Child class", "Abstract class"],
+    answer: 2
+  },
+  {
+    q: "Which is the correct syntax to declare inheritance in Java?",
+    options: ["class Dog inherits Animal", "class Dog extends Animal", "class Dog implements Animal", "class Dog super Animal"],
+    answer: 1
+  },
+  {
+    q: "Which phrase best describes the term Polymorphism?",
+    options: ["One form, many functions", "Many forms", "Data encapsulation", "Information hiding"],
+    answer: 1
+  },
+  {
+    q: "Which of the following statements is TRUE regarding abstract classes?",
+    options: ["Must contain at least one abstract method", "Can contain both abstract methods and concrete (regular) methods", "Cannot have constructors", "Can be declared as final"],
+    answer: 1
+  },
+  {
+    q: "If Class A extends Class B, and Class B extends Class C, this is called...",
+    options: ["Single Inheritance", "Multiple Inheritance", "Multilevel Inheritance", "Hierarchical Inheritance"],
+    answer: 2
+  },
+  {
+    q: "What happens if we declare a method as 'final'?",
+    options: ["The method cannot be called", "The method cannot be overridden by a child class", "The method is converted to abstract", "The method cannot accept any parameters"],
+    answer: 1
+  },
+
+  // Subtopic 4.2: Strings in Java
+  {
+    q: "What is the primary characteristic of String class objects in Java?",
+    options: ["Mutable", "Immutable (Cannot be changed after creation)", "Dynamic", "Transient"],
+    answer: 1
+  },
+  {
+    q: "Which class should be used if we want to create a mutable string?",
+    options: ["String", "StringBuffer", "CharSequence", "StringArray"],
+    answer: 1
+  },
+  {
+    q: "How many String objects are placed in the String Constant Pool for the code: String s1 = \"Java\"; String s2 = \"Java\";?",
+    options: ["2 Objects", "1 Object", "0 Objects", "4 Objects"],
+    answer: 1
+  },
+  {
+    q: "What is the declaration difference between 'String s = \"Hello\";' and 'String s = new String(\"Hello\");'?",
+    options: ["No difference at all", "The second statement creates an object in Heap Memory outside the Pool", "The first statement produces a compilation error", "The second statement makes a mutable string"],
+    answer: 1
+  },
+  {
+    q: "Which method is used to concatenate two Strings?",
+    options: ["append()", "concat()", "add()", "join()"],
+    answer: 1
+  },
+  {
+    q: "Which method is used on a StringBuffer to add text to the end of an existing string?",
+    options: ["concat()", "append()", "insert()", "push()"],
+    answer: 1
+  },
+  {
+    q: "What is the output of the following code?\nString s = \"POLITEKNIK\";\nSystem.out.println(s.length());",
+    options: ["9", "10", "11", "0"],
+    answer: 1
+  },
+  {
+    q: "What is the index of the first character in a String in Java?",
+    options: ["1", "-1", "0", "Any index"],
+    answer: 2
+  },
+  {
+    q: "What is the output of the following code?\nString s = \"MUKAH\";\nSystem.out.println(s.substring(1, 4));",
+    options: ["MUK", "UKA", "UKAH", "UK"],
+    answer: 1
+  },
+  {
+    q: "Which method is used to convert the String \"123\" into an integer numeric value?",
+    options: ["Integer.parseInt()", "Integer.valueOf()", "String.toInt()", "Convert.toInteger()"],
+    answer: 0
+  },
+  {
+    q: "Which method is used to convert the String \"45.67\" into a double numeric value?",
+    options: ["Double.parseDouble()", "Double.valueOf()", "String.toDouble()", "Convert.toDouble()"],
+    answer: 0
+  },
+  {
+    q: "What is the function of the StringBuffer reverse() method?",
+    options: ["Clears the contents of the StringBuffer", "Reverses the order of characters in the StringBuffer", "Converts text to lowercase", "Checks equality of two StringBuffers"],
+    answer: 1
+  },
+  {
+    q: "What is the output of the following code?\nStringBuffer sb = new StringBuffer(\"Hello\");\nsb.append(\" World\");\nSystem.out.println(sb);",
+    options: ["Hello", "World", "Hello World", "Compilation error"],
+    answer: 2
+  },
+  {
+    q: "What happens to the content of 's1' after running the following code?\nString s1 = \"Java\";\ns1.concat(\" OOP\");",
+    options: ["s1 changes to \"Java OOP\"", "s1 remains \"Java\"", "s1 changes to \"OOP\"", "Runtime error occurs"],
+    answer: 1
+  },
+  {
+    q: "What is the output of the following code?\nString s1 = \"Java\";\ns1 = s1.concat(\" OOP\");\nSystem.out.println(s1);",
+    options: ["Java", "Java OOP", "OOP", "Null"],
+    answer: 1
+  },
+  {
+    q: "Which method compares the contents of two Strings while ignoring case (upper/lower case)?",
+    options: ["equals()", "equalsIgnoreCase()", "compareTo()", "compareToIgnoreCase()"],
+    answer: 1
+  },
+  {
+    q: "What is the return type of the s.length() method in Java?",
+    options: ["String", "char", "int", "double"],
+    answer: 2
+  },
+  {
+    q: "Which of the following is a valid method to create a String object?",
+    options: ["String s = \"Hello\";", "String s = new String(\"Hello\");", "char[] ch = {'H','e','l','l','o'}; String s = new String(ch);", "All of the above"],
+    answer: 3
+  },
+  {
+    q: "Which method is used to retrieve a specific character based on its index in a String?",
+    options: ["charAt()", "getChar()", "indexOf()", "substring()"],
+    answer: 0
+  },
+  {
+    q: "What does s.charAt(0) return if String s = \"JAVA\"?",
+    options: ["J", "A", "V", "0"],
+    answer: 0
+  },
+  {
+    q: "What is the use of the replace() method in the String class?",
+    options: ["Deletes a string entirely", "Replaces old characters/sub-strings with new ones", "Trims whitespace at the start and end of a string", "Converts a string to an array"],
+    answer: 1
+  },
+  {
+    q: "Which method is used to remove whitespace at the beginning and end of a String?",
+    options: ["clean()", "strip()", "trim()", "removeSpace()"],
+    answer: 2
+  },
+  {
+    q: "What is the main difference between the '==' operator and the 'equals()' method when comparing two String objects?",
+    options: ["'==' compares content, 'equals()' compares memory references", "'==' compares memory references (location), 'equals()' compares content value", "No difference", "Both only compare string length"],
+    answer: 1
+  },
+  {
+    q: "What is the output of the following code?\nStringBuffer sb = new StringBuffer(\"JAVA\");\nsb.delete(1, 3);\nSystem.out.println(sb);",
+    options: ["JA", "JV", "JA", "J"],
+    answer: 1
+  },
+  {
+    q: "What is returned by the method substring(3) for String s = \"PROGRAMMING\"?",
+    options: ["PRO", "GRAMMING", "OGRAMMING", "ROGRAMMING"],
+    answer: 1
+  }
+];
+
+let currentQuestion = 0;
+let userAnswers = new Array(quizData.length).fill(null);
+
+function loadQuestion() {
+  const qData = quizData[currentQuestion];
+  document.getElementById("question-number").innerText = `Question ${currentQuestion + 1} / ${quizData.length}`;
+  document.getElementById("question-text").innerText = qData.q;
+  
+  const optionsContainer = document.getElementById("options-container");
+  optionsContainer.innerHTML = "";
+
+  qData.options.forEach((opt, idx) => {
+    const optDiv = document.createElement("div");
+    optDiv.className = "option";
+    optDiv.innerText = opt;
+
+    // If this question has already been answered
+    if (userAnswers[currentQuestion] !== null) {
+      if (idx === qData.answer) {
+        optDiv.classList.add("correct");
+      }
+      if (userAnswers[currentQuestion] === idx && idx !== qData.answer) {
+        optDiv.classList.add("wrong");
+      }
+    } else {
+      optDiv.onclick = () => selectOption(idx);
+    }
+
+    optionsContainer.appendChild(optDiv);
+  });
+
+  // Navigation button controls
+  document.getElementById("prev-btn").disabled = currentQuestion === 0;
+  document.getElementById("next-btn").disabled = currentQuestion === quizData.length - 1;
+  
+  updateScoreboard();
+}
+
+function selectOption(index) {
+  userAnswers[currentQuestion] = index;
+  loadQuestion();
+}
+
+function updateScoreboard() {
+  let correct = 0;
+  let wrong = 0;
+
+  userAnswers.forEach((ans, idx) => {
+    if (ans !== null) {
+      if (ans === quizData[idx].answer) {
+        correct++;
+      } else {
+        wrong++;
+      }
+    }
+  });
+
+  document.getElementById("score-correct").innerText = `Correct: ${correct}`;
+  document.getElementById("score-wrong").innerText = `Wrong: ${wrong}`;
+}
+
+function nextQuestion() {
+  if (currentQuestion < quizData.length - 1) {
+    currentQuestion++;
+    loadQuestion();
+  }
+}
+
+function prevQuestion() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    loadQuestion();
+  }
+}
+
+// Load the first question on start
+loadQuestion();
+</script>
+
+</body>
+</html>
